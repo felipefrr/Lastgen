@@ -5,6 +5,7 @@ Lastlist is a simple script that generates a Spotify playlist based on your Last
 ## Table of Contents
 * [Features](#Features)
 * [Tasks](#Tasks)
+* [Troubleshooting](#Troubleshooting)
 
 ## Features
 * Create a playlist based on your favorite songs;
