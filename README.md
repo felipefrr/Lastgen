@@ -27,7 +27,6 @@ Lastlist is a simple script that generates a Spotify playlist based on your Last
 10. Create the Technologies section.
 
 ## Troubleshooting
-
    [Last.fm API]:  <https://www.last.fm/api/intro>
    [Spotify Web API]: <https://developer.spotify.com/documentation/web-api/>
    [Requests Library v 2.22.0]: <https://requests.readthedocs.io/en/master/>
