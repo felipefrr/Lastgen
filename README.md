@@ -28,12 +28,8 @@ Lastlist is a simple script that generates a Spotify playlist based on your Last
 
 ## Troubleshooting
 
-[Last.fm API] <https://www.last.fm/api/intro>
-
-[Spotify Web API]: <https://developer.spotify.com/documentation/web-api/>
-
-[Requests Library v 2.22.0]: <https://requests.readthedocs.io/en/master/>
-
-[Account Overview]: <https://www.spotify.com/us/account/overview/>
-
-[Get Oauth]: <https://developer.spotify.com/console/post-playlists/>
+   [Last.fm API]:  <https://www.last.fm/api/intro>
+   [Spotify Web API]: <https://developer.spotify.com/documentation/web-api/>
+   [Requests Library v 2.22.0]: <https://requests.readthedocs.io/en/master/>
+   [Account Overview]: <https://www.spotify.com/us/account/overview/>
+   [Get Oauth]: <https://developer.spotify.com/console/post-playlists/>
