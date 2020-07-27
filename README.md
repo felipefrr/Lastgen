@@ -15,7 +15,11 @@ Lastlist is a simple script that generates a Spotify playlist based on your Last
 
 ## Tasks
 1. Understand the Last.fm API; ✔
-2. Create each feature method; **(Working)**
+2. **Create each feature method (Working)**:
+	1. Create a list with user favorite songs; ✔
+	2. Create a list with friends' favorite songs; ✔
+	3. Create a list based on the artist's ranking.
+3. **Deal with errors and implement exceptions (Working)**;
 4. Understand the Spotify API;
 5. Create the Spotify playlist:
 	1. Create the Spotify playlist;
