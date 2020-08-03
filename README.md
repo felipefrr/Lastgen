@@ -18,7 +18,7 @@ Lastlist is a simple script that generates a Spotify playlist based on your Last
 2. **Create each feature method (Working)**:
 	1. Create a list with user favorite songs; ✔
 	2. Create a list with friends' favorite songs; ✔
-	3. Create a list based on the artist's ranking.
+	3. Create a list based on the artist's ranking. ✔
 3. **Deal with errors and implement exceptions (Working)**;
 4. Understand the Spotify API;
 5. Create the Spotify playlist:
@@ -37,6 +37,7 @@ Lastlist is a simple script that generates a Spotify playlist based on your Last
 * [Requests Library v 2.22.0]
 * [Account Overview]
 * [Get Oauth]
+* [Beautiful Soup Library v 4.9.1]
 
 ## Troubleshooting
 * Spotify Oauth token expires very quickly, If you come across a `KeyError` this could
