@@ -9,20 +9,21 @@ from bs4 import BeautifulSoup
 
 from exceptions import ResponseException
 sys.path.insert(1, '../Secrets')
-from secrets import lastfm_key
+from secrets import lastfm_key, spotify_token, spotify_user_id
 
 class CreatePlaylist:
     def __init__(self):
-        self.lastfm_key = lastfm_key
         self.root = "http://ws.audioscrobbler.com/2.0/?method={}"
         self.best_friends = []
     
+    """ USER ORIENTED FUNCTIONS """
+
     # Returns a list of usernames
     def get_user_friends(self, username):
         method = "user.getfriends&user={}&limit={}&api_key={}&format=json".format(
             username,
             60,
-            self.lastfm_key
+            lastfm_key
         )
         query = self.root.format(method)
         response = requests.get(query)
@@ -39,7 +40,7 @@ class CreatePlaylist:
     def get_most_listened(self, username, limit=200):
         method = "user.gettoptracks&user={}&api_key={}&limit={}&format=json".format(
             username,
-            self.lastfm_key,
+            lastfm_key,
             limit
         )
 
@@ -52,19 +53,19 @@ class CreatePlaylist:
             for track in content['toptracks']['track']:
                 most_listened_tracks.append({
                         'artist': track['artist']['name'],
-                        'song': track['name']
+                        'song': track['name'],
                         'playcount': track['playcount']
                     })
         else:
             print("\n It seems that {} hasn't scrobbled yet.\n".format(username))
-        return
+        return most_listened_tracks
 
     # Return a list of dictionaries with keys 'artist','song', 'playcount'
     def get_user_favorite_songs(self, username, limit=100):
         method = "user.getlovedtracks&user={}&limit={}&api_key={}&format=json".format(
             username,
             limit,
-            self.lastfm_key
+            lastfm_key
         )
         # Question: Do I always need to get all the loved songs?
 
@@ -80,7 +81,6 @@ class CreatePlaylist:
                     favorite_songs.append({
                         'artist': track['artist']['name'],
                         'song': track['name']
-                        'playcount': track['playcount']
                     })
             else:
                 print("\n The {} seems not have any favorite songs, therefore, we're going to take his most heard songs.\n".format(username))
@@ -109,11 +109,13 @@ class CreatePlaylist:
 
         return songs
 
+    """ ARTISTS ORIENTED FUNCTIONS """
+
     # Verify if an artist exists
     def search_artist(self, artist):
         method = "artist.search&artist={}&api_key={}&format=json".format(
             artist,
-            self.lastfm_key
+            lastfm_key
         )
 
         query = self.root.format(method)
@@ -130,7 +132,7 @@ class CreatePlaylist:
     def get_top_albums(self, artist, amount=10):
         method = "artist.gettopalbums&artist={}&api_key={}&format=json".format(
             artist,
-            self.lastfm_key
+            lastfm_key
         )
 
         query = self.root.format(method)
@@ -149,7 +151,7 @@ class CreatePlaylist:
     # Return the album's URL
     def get_album_url(self, artist, album):
         method = "album.getinfo&api_key={}&artist={}&album={}&format=json".format(
-            self.lastfm_key,
+            lastfm_key,
             artist,
             album
         )
@@ -196,6 +198,103 @@ class CreatePlaylist:
             return data[0:amount]
 
 
+    """ SPOTIFY FUNCTIONS """
+    
+    # Search for the song
+    def get_spotify_url(self, song_name, artist):
+        query = "https://api.spotify.com/v1/search?query=track%3A{}+artist%3A{}&type=track&offset=0&limit=3".format(
+            song_name,
+            artist
+        )
+        response = requests.get(
+            query,
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer {}".format(spotify_token)
+
+            }
+        )
+        content = json.loads(response.content)
+        
+        if content.get('tracks', None):
+            if content['tracks'].get('items', None):
+                songs = content["tracks"]["items"]
+            else:
+                return None
+        else:
+            return None
+
+        if len(songs) > 0:
+            uri = songs[0]["uri"]
+        else:
+            uri = None
+        return uri
+
+    # Create a new playlist
+    def create_playlist(self, name, description):
+        requests_body = json.dumps({
+            "name": name,
+            "description": description,
+            "public": False
+        })
+
+        query = "https://api.spotify.com/v1/users/{}/playlists".format(
+            spotify_user_id
+        )
+        response = requests.post(
+            query,
+            data=requests_body,
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": "Bearer {}".format(spotify_token)
+            }
+        )
+
+        content = json.loads(response.content)
+        print(content)
+        #Playlist ID
+        return content["id"]
+
+    # Add all liked songs into a new Spotify playlist
+    def add_song_to_playlist(self):
+        songs = self.get_most_listened("edupeixoto", limit=30)
+        uris = []
+        for song in songs:
+            url = self.get_spotify_url(song.get('song'), song.get('artist'))
+            if url:
+                print(song.get('song'), url)
+                uris.append(url)
+        
+        playlist_id = self.create_playlist("Peixo Most Listened", "")
+
+        request_data = json.dumps(uris)
+
+        query = "https://api.spotify.com/v1/playlists/{}/tracks".format(
+            playlist_id
+        )        
+
+        response = requests.post(
+            query,
+            data=request_data,
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": "Bearer {}".format(spotify_token)
+            }
+        )
+
+        if response.status_code != 200:
+            raise ResponseException(response.status_code)
+
+        response_json = response.json()
+        return response_json
+
+
+
+
+
 if __name__ == '__main__':
     cp = CreatePlaylist()
-    cp.get_most_listened("mathcola")
+    #print(cp.get_most_listened("mathcola"))
+    #print(cp.get_spotify_url("Terrible Lie", "Nine Inch Nails"))
+    #print(cp.create_playlist("Teste", "Teste"))
+    print(cp.add_song_to_playlist())

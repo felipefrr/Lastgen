@@ -49,3 +49,4 @@ token!
    [Requests Library v 2.22.0]: <https://requests.readthedocs.io/en/master/>
    [Account Overview]: <https://www.spotify.com/us/account/overview/>
    [Get Oauth]: <https://developer.spotify.com/console/post-playlists/>
+   [Beautiful Soup Library v 4.9.1]: <https://www.crummy.com/software/BeautifulSoup/bs4/doc/>
